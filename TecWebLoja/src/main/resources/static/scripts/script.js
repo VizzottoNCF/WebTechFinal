@@ -7,14 +7,14 @@ document.addEventListener("DOMContentLoaded", function() {
     const backendUrl = 'http://localhost:8080';
     const productForm = document.getElementById('productForm');
     const getAllProductsBtn = document.getElementById('getAllProductsBtn');
-    const productTableBody = document.querySelector('#productTableBody tbody');
+    const productTableTBody = document.querySelector('#productTable tbody');
     const productIdField = document.getElementById('productIdField');
     const saveBtn = document.getElementById('saveBtn');
 
     // Debug: Check if elements exist
     console.log("Backend URL:", backendUrl);
     console.log("ProductForm:", productForm);
-    console.log("ProductTableBody:", productTableBody);
+    console.log("ProductTableTBody:", productTableTBody);
     console.log("Save Button:", saveBtn);
 
     if (!productForm) {
@@ -33,15 +33,15 @@ document.addEventListener("DOMContentLoaded", function() {
         const price = document.getElementById('price').value;
         const quantity = document.getElementById('quantity').value;
         const supplier = document.getElementById('supplier').value;
-        const barcode = document.getElementById('barcode').value;
+        const barCode = name + supplier;
 
-        console.log(productId, name, category, price, quantity, supplier, barcode);
+        console.log(productId, name, category, price, quantity, supplier, barCode);
 
         if (productId) {
-            updateProduct(productId, name, category, price, quantity, supplier, barcode);
+            updateProduct(productId, name, category, price, quantity, supplier, barCode);
             console.log('Product Updated Successfully');
         } else {
-            addProduct(name, category, price, quantity, supplier, barcode);
+            addProduct(name, category, price, quantity, supplier, barCode);
             console.log('Product Added Successfully');
         }
     });
@@ -51,14 +51,14 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
     // POST request to add product
-    function addProduct(name, category, price, quantity, supplier, barcode) {
-        console.log(`'Add product request | ${name} ${category} ${price} ${quantity} ${supplier} ${barcode}`);
+    function addProduct(name, category, price, quantity, supplier, barCode) {
+        console.log(`'Add product request | ${name} ${category} ${price} ${quantity} ${supplier} ${barCode}`);
 
         fetch(`${backendUrl}/loja/addProduct`, {
             method: 'POST',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             body: `name=${encodeURIComponent(name)}&category=${encodeURIComponent(category)}&price=${encodeURIComponent(price)}
-                &quantity=${encodeURIComponent(quantity)}&supplier=${encodeURIComponent(supplier)}&barcode=${encodeURIComponent(barcode)}`,
+                &quantity=${encodeURIComponent(quantity)}&supplier=${encodeURIComponent(supplier)}&barCode=${encodeURIComponent(barCode)}`,
         })
             .then(response => response.text())
             .then(data => {
@@ -72,11 +72,11 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // PUT request to update product
-    function updateProduct(productId, name, category, price, quantity, supplier, barcode) {
-        fetch(`${backendUrl}/loja/update/${productId}name=${encodeURIComponent(name)}
+    function updateProduct(productId, name, category, price, quantity, supplier, barCode) {
+        fetch(`${backendUrl}/loja/update/${productId}?name=${encodeURIComponent(name)}
                 &category=${encodeURIComponent(category)}&price=${encodeURIComponent(price)}
                 &quantity=${encodeURIComponent(quantity)}&supplier=${encodeURIComponent(supplier)}
-                &barcode=${encodeURIComponent(barcode)}`, {
+                &barCode=${encodeURIComponent(barCode)}`, {
             method: 'PUT'
         })
             .then(response => response.text())
@@ -106,7 +106,7 @@ document.addEventListener("DOMContentLoaded", function() {
     function fetchProducts() {
         fetch(`${backendUrl}/loja/all`).then(response => response.json()).then(products => {
             // clean table
-            productTableBody.innerHTML = '';
+            productTableTBody.innerHTML = '';
 
             // add each product
             products.forEach(product => {
@@ -169,14 +169,11 @@ document.addEventListener("DOMContentLoaded", function() {
                 row.appendChild(actionCell);
 
                 // appends row to table
-                productTableBody.appendChild(row);
-
-            }).catch(error => {
-                console.error('Erro:', error);
+                productTableTBody.appendChild(row);
             });
 
 
-        })
+        }).catch(error => { console.error('Erro:', error); });
 
         console.log("Javascript initialization complete");
     }
