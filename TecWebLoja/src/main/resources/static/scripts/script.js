@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function() {
         console.log(productId, name, category, price, quantity, supplier, barCode);
 
         if (productId) {
-            updateProduct(productId, name, category, price, quantity, supplier, barCode);
+            updateProduct(productId, name, category, price, quantity, supplier);
             console.log('Product Updated Successfully');
         } else {
             addProduct(name, category, price, quantity, supplier, barCode);
@@ -67,26 +67,25 @@ document.addEventListener("DOMContentLoaded", function() {
                 productForm.reset();
                 fetchProducts()
             }).catch(error => {
-            console.error('Erro', error);
+            console.error('Error', error);
         });
     }
 
+
     // PUT request to update product
-    function updateProduct(productId, name, category, price, quantity, supplier, barCode) {
-        fetch(`${backendUrl}/loja/update/${productId}?name=${encodeURIComponent(name)}
-                &category=${encodeURIComponent(category)}&price=${encodeURIComponent(price)}
-                &quantity=${encodeURIComponent(quantity)}&supplier=${encodeURIComponent(supplier)}
-                &barCode=${encodeURIComponent(barCode)}`, {
+    function updateProduct(productId, name, category, price, quantity, supplier) {
+        const barCode = name + supplier;
+
+        fetch(`${backendUrl}/loja/update/${productId}?name=${encodeURIComponent(name)}&category=${encodeURIComponent(category)}&price=${encodeURIComponent(price)}&quantity=${encodeURIComponent(quantity)}&supplier=${encodeURIComponent(supplier)}&barCode=${encodeURIComponent(barCode)}`, {
             method: 'PUT'
         })
-            .then(response => response.text())
-            .then(data => {
-                alert(data);
-
-                productForm.reset();
-                productIdField.value = '';
-                fetchProducts()
-            }).catch(error => console.error('Erro:', error));
+        .then(response => response.text())
+        .then(data => {
+            alert(data);
+            productForm.reset();
+            productIdField.value = '';
+            fetchProducts()
+        }).catch(error => console.error('Error:', error));
     }
 
     // DELETE request to delete product
@@ -94,11 +93,11 @@ document.addEventListener("DOMContentLoaded", function() {
         fetch(`${backendUrl}/loja/delete/${productId}`, {method: 'DELETE'})
             .then(response => response.text())
             .then(data => {
-                console.log(`deleted product id ${productId} sucessfully`);
+                console.log(`deleted product id ${productId} successfully`);
                 alert(data);
                 fetchProducts();
             }).catch(error => {
-            console.error('Erro:', error);
+            console.error('Error:', error);
         });
     }
 
@@ -136,6 +135,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 const editButton = document.createElement('button');
                 editButton.textContent = 'Edit';
                 editButton.onclick = () => {
+
                     productIdField.value = product.id; // defines id in hidden field
                     document.getElementById('name').value = product.name;
                     document.getElementById('category').value = product.category;
@@ -173,9 +173,10 @@ document.addEventListener("DOMContentLoaded", function() {
             });
 
 
-        }).catch(error => { console.error('Erro:', error); });
+        }).catch(error => { console.error('Error:', error); });
 
-        console.log("Javascript initialization complete");
     }
+    console.log("Javascript initialization complete");
+    fetchProducts();
 });
 

@@ -2,7 +2,6 @@ package org.example.tecwebloja;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,15 +20,6 @@ public class MainController {
     public String mainPage() {
         return "forward:/pages/Index.html";
     }
-
-
-    //    private Integer id;
-    //    private String name;
-    //    private String category;
-    //    private float price;
-    //    private Integer quantity;
-    //    private String supplier;
-    //    private String barcode;
 
     // POST request to add a product to lineup
     @PostMapping(path="/addProduct")
@@ -64,11 +54,15 @@ public class MainController {
                                               @RequestParam String category, @RequestParam float price,
                                               @RequestParam int quantity, @RequestParam String supplier, @RequestParam String barCode) {
 
+        System.out.println("entrou no update");
+
         // edits product to new values
         // p = product
         // ep = edited product
         Optional<Product> p = productRepository.findById(id);
         if (p.isPresent()) {
+            System.out.println("achou produto");
+
             Product ep = p.get();
             ep.setName(name);
             ep.setCategory(category);
@@ -76,6 +70,8 @@ public class MainController {
             ep.setQuantity(quantity);
             ep.setSupplier(supplier);
             ep.setBarcode(barCode);
+
+            productRepository.save(ep);
 
             return "Product Updated";
         }
